@@ -4,6 +4,7 @@ package com.atharva.quizapp.Service;
 import com.atharva.quizapp.Entity.Question;
 import com.atharva.quizapp.Entity.QuestionWrapper;
 import com.atharva.quizapp.Entity.Quiz;
+import com.atharva.quizapp.Entity.Response;
 import com.atharva.quizapp.dao.QuestionDao;
 import com.atharva.quizapp.dao.QuizDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,19 @@ public class QuizService {
             questionsForUser.add(qw);
         }
         return new ResponseEntity<>(questionsForUser,HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Quiz quiz = quizDao.findById(id).get();
+        List<Question> questions = quiz.getQuestions();
+        int score=0;
+        int i=0;
+        for(Response response:responses){
+            if(response.getResponse().equals(questions.get(i).getRightAnswer())){
+                score++;
+            }
+            i++;
+        }
+        return new ResponseEntity<>(score,HttpStatus.OK);
     }
 }
